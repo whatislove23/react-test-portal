@@ -102,7 +102,7 @@ const router = createBrowserRouter(
       element: <Register />,
     },
   ],
-  { basename: "/react-test-portal" }
+  { basename: "/react-test-portal/" }
 );
 root.render(
   <Provider store={store}>
