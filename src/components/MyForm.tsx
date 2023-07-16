@@ -1,80 +1,136 @@
-import Button from "./Button";
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { PiEyeLight, PiEyeSlashLight } from "react-icons/pi";
+import Button from "./Button";
 import { useState } from "react";
-import { UserDataForm } from "../interfaces/interfaces";
+import StyledErrorField from "./StyledError";
 import { useNavigate } from "react-router-dom";
-type FormProps = {
+import { UserDataForm } from "../interfaces/interfaces";
+import { Formik, Form, Field } from "formik";
+import { PiEyeLight, PiEyeSlashLight } from "react-icons/pi";
+
+type Props = {
   head: string;
   buttonText: string;
   buttonTwoText: string;
-  func: ({ email, password }: UserDataForm) => void;
+  func: (data: UserDataForm) => void;
   path: string;
+  register?: boolean;
 };
-function MyForm({ head, buttonText, buttonTwoText, func, path }: FormProps) {
+
+function MyForm({
+  head,
+  buttonText,
+  buttonTwoText,
+  func,
+  path,
+  register,
+}: Props) {
   const navigate = useNavigate();
   const [isVisible, setVisible] = useState<boolean>(false);
-  const validationSchema = Yup.object().shape({
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    password: Yup.string()
-      .min(6, "Password must be at least 6 characters")
-      .required("Password is required"),
-  });
   const handleSubmit = (data: UserDataForm) => {
     func(data);
   };
+
+  const validationSchema = Yup.object().shape(
+    register
+      ? {
+          firstName: Yup.string()
+            .required("First name is required")
+            .min(2, "First name should be at least 2 characters"),
+          lastName: Yup.string()
+            .required("Last name is required")
+            .min(6, "First name should be at least 6 characters"),
+          email: Yup.string()
+            .email("Invalid email")
+            .required("Email is required"),
+          password: Yup.string()
+            .min(6, "Password must be at least 6 characters")
+            .required("Password is required"),
+        }
+      : {
+          email: Yup.string()
+            .email("Invalid email")
+            .required("Email is required"),
+          password: Yup.string()
+            .min(6, "Password must be at least 6 characters")
+            .required("Password is required"),
+        }
+  );
+
+  const intitialValues = {
+    email: "",
+    password: "",
+  };
+  let values = register
+    ? { ...intitialValues, firstName: "", lastName: "" }
+    : intitialValues;
+
   return (
-    <div className="container mx-auto flex  justify-center items-center gap-5 p-5 h-screen">
-      <div className="bg-white bg-opacity-50 backdrop-filter backdrop-blur-lg backdrop-saturate-150 rounded-lg p-4 mx-4 shadow w-1/4 h-auto flex  items-center flex-col shadow">
-        <h1 className="text-center text-3xl text-white ">{head}</h1>
+    <div className="container mx-auto flex  justify-center items-center p-5 h-screen ">
+      <div className="bg-slate-50 rounded-lg p-5 mx-4 sm:w-1/4 h-auto flex  items-center flex-col shadow ">
+        <h1 className="text-center text-3xl text-slate-700 ">{head}</h1>
         <Formik
-          initialValues={{ email: "", password: "" }}
+          initialValues={values}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isValid, values }) => (
+          {({ isValid, values, submitForm }) => (
             <Form className="h-full mt-5 w-full ">
-              <div className="w-full h-full relative flex  flex-col items-center justify-between mb-2">
-                <div className="w-full flex flex-col gap-2 mb-2">
-                  <ErrorMessage
-                    name={"email"}
-                    component="div"
-                    className=" w-full rounded-lg bg-red-400   bg-opacity-50 p-2 text-white   shadow block "
-                  />
+              <div className="w-full h-full relative flex  flex-col items-center justify-between">
+                <div className="w-full flex flex-col gap-3">
+                  <StyledErrorField name={"email"} />
                   <Field
                     type="email"
                     id="email"
                     name="email"
                     placeholder="Email"
-                    className="p-2 rounded-lg  w-full  bg-white bg-opacity-50 shadow  placeholder:text-white  outline-none"
+                    className="p-2 rounded-lg  w-full  bg-slate-300  shadow  placeholder:text-slate-800 outline-none"
                     autoComplete="off"
                   />
-                  <ErrorMessage
-                    name="password"
-                    className=" w-full rounded-lg bg-red-400   bg-opacity-50 p-2 text-white  shadow block"
-                    component="div"
-                  />
+                  {register ? (
+                    <>
+                      <StyledErrorField name={"firstName"} />
+                      <Field
+                        type="firstName"
+                        id="firstName"
+                        name="firstName"
+                        placeholder="First name"
+                        className="p-2 rounded-lg  w-full  bg-slate-300  shadow  placeholder:text-slate-800 outline-none"
+                        autoComplete="off"
+                      />
+                      <StyledErrorField name={"lastName"} />
+                      <Field
+                        type="lastName"
+                        id="lastName"
+                        name="lastName"
+                        placeholder="Last name"
+                        className="p-2 rounded-lg  w-full  bg-slate-300  shadow  placeholder:text-slate-800 outline-none"
+                        autoComplete="off"
+                      />
+                    </>
+                  ) : null}
+
+                  <StyledErrorField name="password" />
                   <div className="flex shadow rounded-lg">
                     <Field
                       type={isVisible ? "text" : "password"}
                       id="password"
                       name="password"
                       placeholder="Password"
-                      className="p-2   w-full  bg-white bg-opacity-50  rounded-l-lg  placeholder:text-white outline-none  "
+                      className="p-2  w-full  bg-slate-300  rounded-l-lg rounded-r-none  placeholder:text-slate-800 outline-none  "
                     />
                     <button
+                      type="button"
                       onClick={() => setVisible((prev) => !prev)}
-                      className="ml-auto text-3xl bg-white bg-opacity-50 px-2 rounded-r-lg text-white hover:text-black transition duration-200 ease-in-out"
+                      className="ml-auto text-3xl bg-slate-300 px-2 rounded-r-lg text-slate-800  "
                     >
                       {isVisible ? <PiEyeSlashLight /> : <PiEyeLight />}
                     </button>
                   </div>
                 </div>
-                <div className="flex gap-3 flex-wrap justify-center w-full">
+                <div className="flex gap-3 flex-wrap justify-center w-full mt-3">
                   <Button
                     disabled={!isValid}
-                    type="submit"
+                    onClick={submitForm}
                     addStyle="flex-grow"
                   >
                     {buttonText}

@@ -2,20 +2,22 @@ import { ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
-  onClick?: () => void;
   addStyle?: string;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
+  onClick?: () => void;
 };
-export default ({ children, onClick, type, disabled, addStyle }: Props) => {
+
+export default function Button({ children, onClick, type, disabled, addStyle }: Props){
   return (
     <button
       disabled={disabled}
       type={`${type || "button"}`}
       onClick={onClick}
-      className={` ${
-        addStyle ? addStyle : " "
-      }  shadow disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:bg-opacity-20 disabled:hover:text-white bg-white bg-opacity-20 py-2 px-4 rounded text-white transition hover:scale-105 hover:bg-opacity-70 hover:text-gray-800 hover:transition `}
+      className={` shadow disabled:cursor-not-allowed  disabled:bg-slate-300 disabled:text-slate-800  disabled:hover:text-slate-800 bg-slate-800 py-2 px-4 rounded text-white transition 
+       hover:text-slate-50 hover:transition ${
+         addStyle ? addStyle : "hover:bg-slate-700"
+       } `}
     >
       {children}
     </button>

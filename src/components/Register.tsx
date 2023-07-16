@@ -1,32 +1,41 @@
-import axios from "axios";
-import { UserDataForm } from "../interfaces/interfaces";
 import MyForm from "./MyForm";
 import { toast } from "react-toastify";
-import { Navigate } from "react-router-dom";
-import { useAppSelector } from "../app/hooks";
-import { getUser } from "../app/userSlice";
+import { getUser, setUser } from "../app/userSlice";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { UserDataForm, UserServerData } from "../interfaces/interfaces";
+import { postData } from "../functions/apiFunctions";
 
 function Register() {
   const { user } = useAppSelector(getUser);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const handleSubmit = (data: UserDataForm) => {
-    axios
-      .post("http://localhost:3000/api/register/createUser", data)
+    const { email, password, firstName, lastName } = data;
+    const loadingToast = toast.loading("Loading...");
+    const res = {
+      email,
+      password,
+      userName: `${firstName?.trim()} ${lastName?.trim()}`,
+      creationDate: new Date(),
+    };
+    postData("register/createUser", res)
       .then((res) => {
-        toast.success(res.data);
+        dispatch(setUser(res?.data[0] as UserServerData));
+        navigate("/tests");
+        toast.dismiss(loadingToast);
+        toast.success("User created");
       })
       .catch((error) => {
         if (error.response && error.response.status === 409) {
-          // Handle the 409 Conflict error
           toast.error(error.response.data);
+          toast.dismiss(loadingToast);
         } else {
-          // Handle other errors
-          console.log("An error occurred:", error.message);
+          toast.error(error.message, { autoClose: false });
         }
       });
   };
-  if (user.id) {
-    return <Navigate to="/tests" replace />;
-  }
+  user.id ? <Navigate to="/tests" replace /> : <Navigate to="/auth" replace />;
   return (
     <MyForm
       path="/auth"
@@ -34,6 +43,7 @@ function Register() {
       buttonText="Sign up"
       buttonTwoText={"Sign in"}
       func={handleSubmit}
+      register={true}
     />
   );
 }

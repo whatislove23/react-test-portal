@@ -3,24 +3,54 @@
 @import "tailwindcss/utilities";
 * {
   font-family: "Rubik", sans-serif;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 body {
   font-family: "Rubik", sans-serif;
 
-  background: #7f00ff; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to right,
-    #e100ff,
-    #7f00ff
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to right,
-    #e100ff,
-    #7f00ff
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-color: #e2e8f0;
+  /* 300 */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 input:-webkit-autofill {
-  -webkit-box-shadow: inset 0 0 0px 9999px rgb(246, 197, 255);
+  -webkit-box-shadow: inset 0 0 0px 9999px #cbd5e1;
 }
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  appearance: none;
+  -webkit-appearance: none;
+
+  border-radius: 50%;
+
+  background: #cbd5e1;
+
+  border: 3px solid #f8fafc;
+
+  box-shadow: 0 0 0 1px#cbd5e1;
+}
+input[type="radio"]:checked {
+  background-color: #0f172a;
+}
+shadow-custom {
+  box-shadow: 0 0 0 1px#cbd5e1;
+}
+
+.my-blur {
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+/* @media (min-width: 640px) {
+  body {
+    background-color: #f8fafc;
+  }
+} */

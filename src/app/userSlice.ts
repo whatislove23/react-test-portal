@@ -3,10 +3,11 @@ import { RootState } from "./store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 let userStorage = localStorage.getItem("user");
-let parsedUser = userStorage && JSON.parse(userStorage);
+let parsedUser =
+  (userStorage && JSON.parse(userStorage)) || ({} as UserServerData);
 
 const initialState = {
-  user: parsedUser || ({} as UserServerData),
+  user: parsedUser,
 };
 
 const userSlice = createSlice({
@@ -21,6 +22,5 @@ const userSlice = createSlice({
 });
 
 export const { setUser } = userSlice.actions;
-
 export const getUser = (state: RootState) => state.user;
 export default userSlice.reducer;

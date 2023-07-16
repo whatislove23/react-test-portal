@@ -1,31 +1,34 @@
-import axios from "axios";
-import { UserDataForm } from "../interfaces/interfaces";
 import MyForm from "./MyForm";
 import { toast } from "react-toastify";
-
-import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { getUser, setUser } from "../app/userSlice";
 import { Navigate } from "react-router-dom";
+import { getUser, setUser } from "../app/userSlice";
+import { postData } from "../functions/apiFunctions";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { UserDataForm, UserServerData } from "../interfaces/interfaces";
+
 function Auth() {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getUser);
   const handleSubmit = (data: UserDataForm) => {
-    axios
-      .post("http://localhost:3000/api/auth/getUser", data)
+    const loadingToast = toast.loading("Loading...");
+    postData("auth/getUser", data)
       .then((res) => {
-        dispatch(setUser(res.data.data));
-        toast.success(res.data.message);
+        if (res !== undefined) {
+          dispatch(setUser(res?.data.data as UserServerData));
+          toast.dismiss(loadingToast);
+          toast.success(res?.data.message);
+        }
       })
       .catch((error) => {
         if (error) {
           console.log(error);
         }
         if (error.response && error.response.status === 401) {
-          // Handle the 409 Conflict error
+          console.log(error.response.data);
+          toast.dismiss(loadingToast);
           toast.error(error.response.data);
         } else {
-          // Handle other errors
-          console.log("An error occurred:", error.message);
+          toast.error(error.message, { autoClose: false });
         }
       });
   };

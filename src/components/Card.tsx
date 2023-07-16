@@ -4,14 +4,28 @@ type Props = {
   title: string;
   path: string;
   listNumber: number;
+  date: Date;
+  additional?: string;
 };
-export default ({ title, path, listNumber }: Props) => {
+
+export default function Card({
+  title,
+  path,
+  listNumber,
+  date,
+  additional,
+}: Props) {
+  const dateInst = new Date(date);
   return (
     <Link
       to={path}
-      className="shadow bg-white bg-opacity-20 py-2 px-4 rounded text-white transition hover:bg-opacity-70 hover:text-gray-800 hover:transition hover:cursor-pointer w-full rounded-lg flex  items-center"
+      className="bg-slate-500 text-slate-50 shadow  py-2 px-4 rounded transition hover:bg-slate-700 transition hover:cursor-pointer w-full   grid"
     >
-      {listNumber}. {title}
+      <p>
+        {listNumber}. {title}
+      </p>
+      {additional ? <p>{additional}</p> : null}
+      <p>Date: {dateInst.toLocaleDateString()}</p>
     </Link>
   );
-};
+}

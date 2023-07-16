@@ -1,40 +1,38 @@
-import { IAnswer, IData, IQuestion } from "../interfaces/interfaces";
+import { IQuestion } from "../interfaces/interfaces";
 
 type Props = {
+  page: number;
   questions: IQuestion;
   answers: IQuestion[];
-  page: number;
   onInputChange: (option: IQuestion) => void;
 };
-function RadioForm({ questions, onInputChange, answers, page }: Props) {
+
+function RadioForm({ questions, answers, page, onInputChange }: Props) {
   return (
     <form className="flex flex-col gap-2">
       {questions.answers?.map((task, index) => {
-        const styles = [
-          "hover:cursor-pointer bg-white shadow-sm bg-opacity-20 py-2 px-4 flex items-center gap-2 rounded  transition hover:bg-opacity-70 hover:text-gray-800 hover:transition ",
-        ];
+        const styles =
+          " bg-slate-300 hover:cursor-pointer  shadow py-2 px-4 flex items-center gap-2 rounded  hover:bg-slate-700 hover:text-slate-50 transition ".split(
+            " "
+          );
         let isChecked = answers.some((question) =>
           question.answers.some(
             (answer) =>
               answer.checked &&
               answer.answer === task.answer &&
-              question.question == questions.question
+              question.question === questions.question
           )
         );
-        if (isChecked) {
-          styles.push("bg-opacity-70 text-gray-800");
-        } else {
-          styles.push("text-white");
-        }
+        isChecked ? styles.push("bg-slate-800 text-slate-50") : styles.push("");
         return (
           <div
             className={styles.join(" ")}
             key={task.answer + page + index}
             onClick={() => {
               let answers = questions.answers.map((question) => {
-                if (question.answer == task.answer) {
-                  return { ...task, checked: true };
-                } else return question;
+                return question.answer === task.answer
+                  ? { ...task, checked: true }
+                  : question;
               });
               onInputChange({ question: questions.question, answers });
             }}

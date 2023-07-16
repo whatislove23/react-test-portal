@@ -1,39 +1,41 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Navigate } from "react-router-dom";
-import { IData, IAnswer } from "../interfaces/interfaces";
+import { v4 as uuidv4 } from "uuid";
+import { toast } from "react-toastify";
 import RadioForm from "./RadioForm";
+import { getUser } from "../app/userSlice";
+import { RxCross2 } from "react-icons/rx";
 import Button from "../components/Button";
 import Progress from "./Progress/Progress";
 import { useAppSelector } from "../app/hooks";
-import { getUser } from "../app/userSlice";
-import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+import { IData, IAnswer } from "../interfaces/interfaces";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
+import Modal from "./Modal";
+import { fetchData, postData } from "../functions/apiFunctions";
+import Loader from "./loader/Loader";
 
-function TestPage() {
+export default function TestPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [data, setData] = useState<IData[]>([]);
   const [page, setPage] = useState(0);
-  const [answers, setAnswers] = useState<any[]>([]);
   const { user } = useAppSelector(getUser);
+  const [data, setData] = useState<IData[]>([]);
+  const [answers, setAnswers] = useState<any[]>([]);
+  const [open, setOpen] = useState(false);
+  const [open1, setOpen1] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3000/api/test/${id}`
-        );
-        //@ts-ignore
-        const newData = response.data.map((data) => ({
+    setLoading(true);
+    fetchData(`test/${id}`)
+      .then((response) => {
+        const newData = response?.data.map((data: any) => ({
           ...data,
           questions: JSON.parse(data.questions),
         }));
         setData(newData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
+        setLoading(false);
+      })
+      .catch((e) => toast.error(e.message, { autoClose: false }));
   }, [id]);
 
   const calculateMark = (): number => {
@@ -46,24 +48,24 @@ function TestPage() {
     return Math.round((countCheckedRightAnswers / answers.length) * 100);
   };
   const onSubmit = () => {
-    if (window.confirm("Отправить форму?")) {
-      let grade = calculateMark();
-      let userData = {
-        answers: JSON.stringify(answers),
-        testId: Number(id),
-        grade,
-        userId: user.id,
-      };
-      axios
-        .post(`http://localhost:3000/api/test/${id}/save`, userData)
-        .then((response) => {
-          navigate("/tests");
-          toast.success(response.data);
-        })
-        .catch((error) => {
-          console.error("Помилка при виконанні POST-запиту:", error.message);
-        });
-    }
+    const loadingToast = toast.loading("Loading...");
+    let resId = uuidv4();
+    resId = resId.replaceAll("-", "");
+    let userData = {
+      id: resId,
+      grade: calculateMark(),
+      answers: JSON.stringify(answers),
+      testId: Number(id),
+      userId: user.id,
+      creationDate: new Date(),
+    };
+    postData(`test/${id}/save`, userData)
+      .then(() => {
+        toast.dismiss(loadingToast);
+        toast.success("Result saved");
+        navigate(`/stats/${resId}`);
+      })
+      .catch((e) => toast.error(e.message, { autoClose: false }));
   };
   const onInputChange = (option: any) => {
     let element = answers.find((item) => item.question === option.question);
@@ -76,70 +78,108 @@ function TestPage() {
     );
     setAnswers(updatedAnswers);
   };
+  const leave = () => {
+    setAnswers([]);
+    navigate("/tests");
+  };
   if (!user.id) {
     return <Navigate to="/auth" replace />;
   }
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div
-        className="container mx-auto 
-        bg-white bg-opacity-50 backdrop-filter backdrop-blur-lg backdrop-saturate-150 rounded-lg p-4 mx-4 shadow"
-      >
-        <Progress
-          max={data[0]?.questions[page].answers.length}
-          current={answers.length}
-        />
-        <p className="text-2xl text-center text-white mb-3">
-          {data[0]?.questions[page].question}
-        </p>
-        <RadioForm
-          page={page}
-          answers={answers}
-          questions={{
-            question: data[0]?.questions[page].question,
-            answers: data[0]?.questions[page].answers,
-          }}
-          onInputChange={onInputChange}
-        />
-        <div className="flex flex-col gap-2 mt-5">
-          <div className="flex  justify-center gap-5 ">
-            {page > 0 && (
-              <Button
-                onClick={() => {
-                  setPage((current) => (current > 0 ? (current -= 1) : 0));
+    <>
+      {open && (
+        <Modal
+          resetBtnText="Go back"
+          submitBtnText="Submit"
+          runFunction={onSubmit}
+          onClose={setOpen}
+        >
+          Are you sure to save results ?
+        </Modal>
+      )}
+      {open1 && (
+        <Modal
+          resetBtnText="Go back"
+          submitBtnText="Leave"
+          runFunction={leave}
+          onClose={setOpen1}
+        >
+          Are you sure to leave? <br /> Results won't be saved
+        </Modal>
+      )}
+      <Progress max={data[0]?.questions.length} current={answers.length} />
+      <div className="flex justify-center items-center h-screen">
+        <div
+          className="container mx-auto 
+        bg-slate-50 rounded-lg p-4 mx-4 shadow"
+        >
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <>
+              <div className="flex  justify-between mb-3">
+                <RxCross2
+                  onClick={() => setOpen1(true)}
+                  className="text-2xl text-slate-700 cursor-pointer hover:scale-125 transition ease-in-out"
+                />
+                <p className="text-2xl text-center text-slate-700 ">
+                  {data[0]?.questions[page].question}
+                </p>
+                <p></p>
+              </div>
+              <RadioForm
+                page={page}
+                answers={answers}
+                questions={{
+                  question: data[0]?.questions[page].question,
+                  answers: data[0]?.questions[page].answers,
                 }}
-              >
-                Back
-              </Button>
-            )}
-            {page >= data[0]?.questions.length - 1 ? (
-              <Button
-                onClick={onSubmit}
-                disabled={!(answers.length === page + 1)}
-              >
-                Submit
-              </Button>
-            ) : (
-              <Button
-                onClick={() => {
-                  setPage((current) =>
-                    current < data[0]?.questions.length - 1
-                      ? current + 1
-                      : data[0]?.questions.length - 1
-                  );
-                }}
-                disabled={
-                  !(answers.length === page + 1 || answers.length > page)
-                }
-              >
-                Forward
-              </Button>
-            )}
-          </div>
+                onInputChange={onInputChange}
+              />
+              <div className="flex flex-col  items-center gap-2 mt-2">
+                <div className="flex  justify-center gap-2 w-20">
+                  {page > 0 && (
+                    <Button
+                      addStyle="w-full"
+                      onClick={() => {
+                        setPage((current) =>
+                          current > 0 ? (current -= 1) : 0
+                        );
+                      }}
+                    >
+                      Back
+                    </Button>
+                  )}
+                  {page >= data[0]?.questions.length - 1 ? (
+                    <Button
+                      addStyle="w-full"
+                      onClick={() => setOpen(true)}
+                      disabled={!(answers.length === page + 1)}
+                    >
+                      Submit
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        setPage((current) =>
+                          current < data[0]?.questions.length - 1
+                            ? current + 1
+                            : data[0]?.questions.length - 1
+                        );
+                      }}
+                      disabled={
+                        !(answers.length === page + 1 || answers.length > page)
+                      }
+                    >
+                      Forward
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
-    </div>
+    </>
   );
 }
-
-export default TestPage;
