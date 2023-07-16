@@ -20,87 +20,90 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <>
-        <Header />
-        <HomePage />
-      </>
-    ),
-    children: [
-      {
-        path: "/",
-        element: <TestsPage />,
-      },
-      {
-        path: "/tests",
-        element: <TestsPage />,
-      },
-      {
-        path: "/stats",
-        element: (
-          <>
-            <Stats />
-          </>
-        ),
-      },
-      {
-        path: "/stats/:id",
-        element: (
-          <>
-            <TestResults />
-          </>
-        ),
-      },
-      {
-        path: "/results/:id",
-        element: (
-          <>
-            <StatsTestUsers />
-          </>
-        ),
-      },
-      {
-        path: "/create",
-        element: (
-          <>
-            <CreateTest />,
-          </>
-        ),
-      },
-      {
-        path: "/admin/users",
-        element: (
-          <>
-            <AdminUsers />
-          </>
-        ),
-      },
-      {
-        path: "admin/users/:id",
-        element: (
-          <>
-            <AboutUser />
-          </>
-        ),
-      },
-    ],
-  },
-  {
-    path: "/test/:id",
-    element: <TestPage />,
-  },
-  {
-    path: "/auth",
-    element: <Auth />,
-  },
-  {
-    path: "/register",
-    element: <Register />,
-  },
-]);
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: (
+        <>
+          <Header />
+          <HomePage />
+        </>
+      ),
+      children: [
+        {
+          path: "/",
+          element: <TestsPage />,
+        },
+        {
+          path: "/tests",
+          element: <TestsPage />,
+        },
+        {
+          path: "/stats",
+          element: (
+            <>
+              <Stats />
+            </>
+          ),
+        },
+        {
+          path: "/stats/:id",
+          element: (
+            <>
+              <TestResults />
+            </>
+          ),
+        },
+        {
+          path: "/results/:id",
+          element: (
+            <>
+              <StatsTestUsers />
+            </>
+          ),
+        },
+        {
+          path: "/create",
+          element: (
+            <>
+              <CreateTest />,
+            </>
+          ),
+        },
+        {
+          path: "/admin/users",
+          element: (
+            <>
+              <AdminUsers />
+            </>
+          ),
+        },
+        {
+          path: "admin/users/:id",
+          element: (
+            <>
+              <AboutUser />
+            </>
+          ),
+        },
+      ],
+    },
+    {
+      path: "/test/:id",
+      element: <TestPage />,
+    },
+    {
+      path: "/auth",
+      element: <Auth />,
+    },
+    {
+      path: "/register",
+      element: <Register />,
+    },
+  ],
+  { basename: "/react-test-portal" }
+);
 root.render(
   <Provider store={store}>
     <RouterProvider router={router} />
