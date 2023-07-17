@@ -25,6 +25,7 @@ export default function TestsPage({ id, checkboxVisible, path, title }: Props) {
   const [tests, setTest] = useState<ITest[]>([]);
   const [open, setOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const testid = useRef(0);
   useEffect(() => {
     setLoading(true);
     fetchData(`tests/${id}`)
@@ -76,7 +77,7 @@ export default function TestsPage({ id, checkboxVisible, path, title }: Props) {
                 <Modal
                   resetBtnText="Go back"
                   submitBtnText="Delete"
-                  runFunction={() => onDelete(test.id)}
+                  runFunction={() => onDelete(testid.current)}
                   onClose={setOpen}
                 >
                   Are you sure to delete this test and all results ?
@@ -92,7 +93,10 @@ export default function TestsPage({ id, checkboxVisible, path, title }: Props) {
                 <Mytip text="Delete test">
                   <Button
                     addStyle="hover:bg-red-700 transition text-lg h-full"
-                    onClick={() => setOpen(true)}
+                    onClick={() => {
+                      setOpen(true);
+                      testid.current = test.id;
+                    }}
                   >
                     <BsTrash3 />
                   </Button>

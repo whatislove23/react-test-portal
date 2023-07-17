@@ -23,6 +23,7 @@ function Stat({ id, title = "Your statistics" }: Props) {
   const [open, setOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const storedData = useRef<IResults[]>([]);
+  const idstat = useRef(0);
   useEffect(() => {
     setLoading(true);
     fetchData(`getUserResults/${user.id}`)
@@ -90,7 +91,7 @@ function Stat({ id, title = "Your statistics" }: Props) {
                       <Modal
                         resetBtnText="Go back"
                         submitBtnText="Delete"
-                        runFunction={() => onDelete(el.id)}
+                        runFunction={() => onDelete(idstat.current)}
                         onClose={setOpen}
                       >
                         Are you sure to delete user result ?
@@ -107,7 +108,10 @@ function Stat({ id, title = "Your statistics" }: Props) {
                       <Mytip text="Delete result">
                         <Button
                           addStyle="hover:bg-red-700 transition text-lg h-full"
-                          onClick={() => setOpen(true)}
+                          onClick={() => {
+                            setOpen(true);
+                            idstat.current = el.id;
+                          }}
                         >
                           <BsTrash3 />
                         </Button>

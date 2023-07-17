@@ -38,7 +38,7 @@ function MyForm({
             .min(2, "First name should be at least 2 characters"),
           lastName: Yup.string()
             .required("Last name is required")
-            .min(6, "First name should be at least 6 characters"),
+            .min(6, "Last name should be at least 6 characters"),
           email: Yup.string()
             .email("Invalid email")
             .required("Email is required"),

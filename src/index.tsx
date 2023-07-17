@@ -17,11 +17,13 @@ import AdminUsers from "./components/AdminUsers";
 import AboutUser from "./components/AdminAboutUser";
 import StatsTestUsers from "./components/StatsTestUsers";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import PageNotFound from "./components/PageNotFound";
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);
 const router = createBrowserRouter(
   [
+    { path: "*", element: <PageNotFound /> },
     {
       path: "/",
       element: (

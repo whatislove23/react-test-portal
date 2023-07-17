@@ -1,7 +1,7 @@
 import Card from "./Card";
 import Button from "./Button";
 import { BsTrash3 } from "react-icons/bs";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { UserServerData } from "../interfaces/interfaces";
 import GoBackBtn from "./GoBackBtn";
@@ -15,6 +15,7 @@ export default function StatsTestUsers() {
   const [data, setData] = useState<UserServerData[]>([]);
   const [open, setOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const idres = useRef(0);
   useEffect(() => {
     setLoading(true);
     fetchData(`getUsersByTest/${id}`)
@@ -56,7 +57,7 @@ export default function StatsTestUsers() {
                 <Modal
                   resetBtnText="Go back"
                   submitBtnText="Delete"
-                  runFunction={() => onDelete(user.id)}
+                  runFunction={() => onDelete(idres.current)}
                   onClose={setOpen}
                 >
                   Are you sure to delete this test result ?
@@ -71,7 +72,10 @@ export default function StatsTestUsers() {
               />
               <Button
                 addStyle="hover:bg-red-700 transition text-lg"
-                onClick={() => setOpen(true)}
+                onClick={() => {
+                  setOpen(true);
+                  idres.current = user.id;
+                }}
               >
                 <BsTrash3 />
               </Button>
