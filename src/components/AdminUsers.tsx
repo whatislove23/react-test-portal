@@ -18,6 +18,7 @@ function AdminPanel() {
   const [users, setUsers] = useState<UserServerData[]>([]);
   const [open, setOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const deleteId = useRef<undefined | number>(undefined);
   useEffect(() => {
     setLoading(true);
     fetchData("admin/users")
@@ -28,8 +29,9 @@ function AdminPanel() {
       })
       .catch((e) => toast.error(e.message, { autoClose: false }));
   }, []);
-  const onDelete = (id: number) => {
+  const onDelete = () => {
     const loadingToast = toast.loading("Loading...");
+    const id = deleteId.current;
     deleteData(`admin/delete/user/${id}`)
       .then((res) => {
         let data = storedUsers.current.filter((user) => user.id !== id);
@@ -63,7 +65,7 @@ function AdminPanel() {
                   <Modal
                     resetBtnText="Go back"
                     submitBtnText="Delete"
-                    runFunction={() => onDelete(user1.id)}
+                    runFunction={() => onDelete()}
                     onClose={setOpen}
                   >
                     Are you sure you want to delete the user and their tests?
@@ -80,6 +82,7 @@ function AdminPanel() {
                   <Button
                     addStyle="hover:bg-red-700 transition text-lg h-full"
                     onClick={() => {
+                      deleteId.current = user1.id;
                       setOpen(true);
                     }}
                   >
