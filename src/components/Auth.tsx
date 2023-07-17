@@ -29,6 +29,7 @@ function Auth() {
           toast.error(error.response.data);
         } else {
           toast.error(error.message, { autoClose: false });
+          toast.dismiss(loadingToast);
         }
       });
   };

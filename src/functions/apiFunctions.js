@@ -23,7 +23,6 @@ export async function postData(path, data) {
   try {
     return await axios.post(link, data);
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }

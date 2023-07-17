@@ -37,13 +37,19 @@ function RadioForm({ questions, answers, page, onInputChange }: Props) {
               onInputChange({ question: questions.question, answers });
             }}
           >
-            <input
-              type="radio"
-              name={task.answer}
-              checked={isChecked}
-              readOnly
-            />
-            <label htmlFor={task.answer}>{task.answer}</label>
+            <div className="flex  gap-2 items-center">
+              <div className="w-5">
+                <input
+                  type="radio"
+                  name={task.answer}
+                  checked={isChecked}
+                  readOnly
+                />
+              </div>
+              <div className="">
+                <label htmlFor={task.answer}>{task.answer}</label>
+              </div>
+            </div>
           </div>
         );
       })}

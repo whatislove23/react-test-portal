@@ -54,6 +54,7 @@ function Stat({ id, title = "Your statistics" }: Props) {
       })
       .catch((e) => {
         toast.error(e.message, { autoClose: false });
+        toast.dismiss(loadingToast);
       });
   };
   return (

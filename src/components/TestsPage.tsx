@@ -49,6 +49,7 @@ export default function TestsPage({ id, checkboxVisible, path, title }: Props) {
       })
       .catch((e) => {
         toast.error(e.message, { autoClose: false });
+        toast.dismiss(loadingToast);
       });
   };
   if (!user.id) {

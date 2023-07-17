@@ -117,12 +117,15 @@ export default function TestPage() {
             <Loader />
           ) : (
             <>
-              <div className="flex  justify-between mb-3">
+              <div className="flex  justify-between mb-3 flex-col">
                 <RxCross2
                   onClick={() => setOpen1(true)}
                   className="text-2xl text-slate-700 cursor-pointer hover:scale-125 transition ease-in-out"
                 />
-                <p className="text-2xl text-center text-slate-700 ">
+                <h1 className="text-2xl  text-slate-700 text-center mb-2">
+                  Question {page + 1}
+                </h1>
+                <p className="text-xl  text-slate-700 ">
                   {data[0]?.questions[page].question}
                 </p>
                 <p></p>

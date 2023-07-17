@@ -16,6 +16,7 @@ export default function Card({
   additional,
 }: Props) {
   const dateInst = new Date(date);
+  const time = new Date(date);
   return (
     <Link
       to={path}
@@ -25,7 +26,10 @@ export default function Card({
         {listNumber}. {title}
       </p>
       {additional ? <p>{additional}</p> : null}
-      <p>Date: {dateInst.toLocaleDateString()}</p>
+      <p>
+        {dateInst.toLocaleDateString()} {time.getHours()}:
+        {time.getMinutes() < 10 ? `0${time.getMinutes()}` : time.getMinutes()}
+      </p>
     </Link>
   );
 }

@@ -35,7 +35,10 @@ export default function StatsTestUsers() {
           toast.success(res.data);
         }
       })
-      .catch((e) => toast.error(e.message, { autoClose: false }));
+      .catch((e) => {
+        toast.error(e.message, { autoClose: false });
+        toast.dismiss(loadingToast);
+      });
   };
   return (
     <div className="flex flex-col gap-2 relative">

@@ -32,6 +32,8 @@ function Register() {
           toast.dismiss(loadingToast);
         } else {
           toast.error(error.message, { autoClose: false });
+          console.log(error);
+          toast.dismiss(loadingToast);
         }
       });
   };

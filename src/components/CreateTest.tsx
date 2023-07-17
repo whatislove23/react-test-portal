@@ -15,6 +15,7 @@ import { Formik, Form, Field, FieldArray } from "formik";
 function CreateTest() {
   const { user } = useAppSelector(getUser);
   const navigate = useNavigate();
+
   const initialValues = {
     title: "",
     questions: [
@@ -32,7 +33,7 @@ function CreateTest() {
   const validationSchema = Yup.object().shape({
     title: Yup.string()
       .required("Test name is required")
-      .min(6, "Test name should contain at least letters"),
+      .min(6, "Test name should contain at least 6 letters"),
     questions: Yup.array()
       .of(
         Yup.object().shape({
@@ -134,8 +135,9 @@ function CreateTest() {
                               <Field
                                 name={`questions[${index}].question`}
                                 placeholder={`${index + 1}. Question `}
-                                className="p-2 rounded w-full bg-slate-50 shadow placeholder:text-slate-800 outline-none"
+                                className="p-2 rounded w-full bg-slate-50 shadow placeholder:text-slate-800 outline-none h-auto max-h-60"
                                 type="text"
+                                as="textarea"
                               />
                               <FieldArray name={`questions[${index}].answers`}>
                                 {({ insert, remove, push }) => (
