@@ -49,8 +49,3 @@ shadow-custom {
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
 }
-/* @media (min-width: 640px) {
-  body {
-    background-color: #f8fafc;
-  }
-} */

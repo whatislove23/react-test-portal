@@ -16,8 +16,9 @@ import { useState } from "react";
 
 type Props = {
   small?: boolean;
+  onClose?: (arg: boolean) => void;
 };
-export default function Menu({ small = false }: Props) {
+export default function Menu({ small = false, onClose = () => {} }: Props) {
   const { user } = useAppSelector(getUser);
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
@@ -58,6 +59,7 @@ export default function Menu({ small = false }: Props) {
       </div>
       <nav className="flex flex-col p-2 gap-2">
         <NavLink
+          onClick={() => onClose(false)}
           className={({ isActive }) =>
             isActive ? linkStyle + active : linkStyle
           }
@@ -73,6 +75,7 @@ export default function Menu({ small = false }: Props) {
           {!small && "Available tests"}
         </NavLink>
         <NavLink
+          onClick={() => onClose(false)}
           className={({ isActive }) =>
             isActive ? linkStyle + active : linkStyle
           }
@@ -89,6 +92,7 @@ export default function Menu({ small = false }: Props) {
           {!small && "Create test"}
         </NavLink>
         <NavLink
+          onClick={() => onClose(false)}
           className={({ isActive }) =>
             isActive ? linkStyle + active : linkStyle
           }
@@ -106,6 +110,7 @@ export default function Menu({ small = false }: Props) {
 
         {user.isAdmin ? (
           <NavLink
+            onClick={() => onClose(false)}
             className={({ isActive }) =>
               isActive ? linkStyle + active : linkStyle
             }

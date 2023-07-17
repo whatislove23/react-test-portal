@@ -27,7 +27,7 @@ function Header() {
             setOpen(false);
           }}
         >
-          <Menu />
+          <Menu onClose={setOpen} />
         </div>
       )}
     </header>

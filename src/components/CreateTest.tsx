@@ -67,12 +67,14 @@ function CreateTest() {
       creationDate: new Date(),
     };
     postData("test/create", dataSave)
-      .then(() => {
+      .then((res) => {
+        console.log(res);
         navigate("/tests");
         toast.dismiss(loadingToast);
-        toast.success("Test created");
+        toast.success(res.data);
       })
       .catch((error) => {
+        console.log(error);
         toast.dismiss(loadingToast);
         toast.error(error.message, { autoClose: false });
       });

@@ -5,7 +5,7 @@ function StyledErrorField({ name }: { name: string }) {
     <ErrorMessage
       name={name}
       component="div"
-      className="font-bold text-slate-700"
+      className="text-slate-50 bg-red-700  shadow rounded p-2 my-2"
     />
   );
 }

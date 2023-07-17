@@ -41,7 +41,7 @@ function Auth() {
       path="/register"
       head="Sign in"
       buttonText="Sign in"
-      buttonTwoText={"Sgn up"}
+      buttonTwoText={"Sign up"}
       func={handleSubmit}
     />
   );
