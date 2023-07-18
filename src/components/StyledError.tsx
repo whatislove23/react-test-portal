@@ -1,11 +1,17 @@
 import { ErrorMessage } from "formik";
 
-function StyledErrorField({ name }: { name: string }) {
+function StyledErrorField({
+  name,
+  className,
+}: {
+  name: string;
+  className?: string;
+}) {
   return (
     <ErrorMessage
       name={name}
       component="div"
-      className="text-slate-50 bg-red-700  shadow rounded p-2 my-2"
+      className={`bg-red-600 text-slate-50  shadow rounded p-2 ${className}`}
     />
   );
 }

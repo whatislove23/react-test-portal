@@ -82,9 +82,7 @@ function CreateTest() {
   return (
     <div className="h-full ">
       <Formik
-        validateOnMount={true}
-        validateOnBlur={true}
-        validateOnChange={true}
+        validateOnBlur={false}
         validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={onFormSubmit}
@@ -102,7 +100,7 @@ function CreateTest() {
               Test creation
             </h1>
             <div className="">
-              <StyledErrorField name={"title"} />
+              <StyledErrorField name={"title"} className="mb-2" />
               <Field
                 name="title"
                 placeholder="Test name"
@@ -133,6 +131,7 @@ function CreateTest() {
                               )}
                               <StyledErrorField
                                 name={`questions[${index}].question`}
+                                className="mb-2"
                               />
                               <Field
                                 name={`questions[${index}].question`}
@@ -168,6 +167,7 @@ function CreateTest() {
                                           >
                                             <StyledErrorField
                                               name={`questions[${index}].answers[${indexans}].answer`}
+                                              className="mb-2"
                                             />
                                             <div
                                               className={`flex items-center  rounded shadow overflow-hidden ${
@@ -178,6 +178,7 @@ function CreateTest() {
                                             >
                                               <StyledErrorField
                                                 name={`questions[${index}].answers[${indexans}].isRight`}
+                                                className="mb-2"
                                               />
                                               <Field
                                                 type="radio"

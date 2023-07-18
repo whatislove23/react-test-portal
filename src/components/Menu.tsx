@@ -99,13 +99,13 @@ export default function Menu({ small = false, onClose = () => {} }: Props) {
           to={`/stats`}
         >
           {small ? (
-            <Mytip text="Statistic">
+            <Mytip text="Statistics">
               <MdStackedBarChart className="text-slate-50 text-2xl" />
             </Mytip>
           ) : (
             <MdStackedBarChart className="text-slate-50 text-2xl" />
           )}
-          {!small && "Statistic"}
+          {!small && "Statistics"}
         </NavLink>
 
         {user.isAdmin ? (

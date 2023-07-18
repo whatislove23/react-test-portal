@@ -72,11 +72,12 @@ function MyForm({
           initialValues={values}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          validateOnBlur={false}
         >
           {({ isValid, values, submitForm }) => (
             <Form className="h-full mt-5 w-full ">
               <div className="w-full h-full relative flex  flex-col items-center justify-between">
-                <div className="w-full flex flex-col gap-3">
+                <div className="w-full flex flex-col gap-2">
                   <StyledErrorField name={"email"} />
                   <Field
                     type="email"
