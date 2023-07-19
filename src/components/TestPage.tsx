@@ -36,6 +36,10 @@ export default function TestPage() {
         setLoading(false);
       })
       .catch((e) => toast.error(e.message, { autoClose: false }));
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "visible";
+    };
   }, [id]);
 
   const calculateMark = (): number => {

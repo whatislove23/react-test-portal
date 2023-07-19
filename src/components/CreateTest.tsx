@@ -163,7 +163,7 @@ function CreateTest() {
                                     {question.answers.every(
                                       (answer) => answer.isRight === false
                                     ) && (
-                                      <p>
+                                      <p className="bg-red-600 text-slate-50  shadow rounded p-2">
                                         {" "}
                                         At least one correct question must be
                                         provided
