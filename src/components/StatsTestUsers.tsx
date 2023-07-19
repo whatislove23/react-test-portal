@@ -20,6 +20,7 @@ export default function StatsTestUsers() {
     setLoading(true);
     fetchData(`getUsersByTest/${id}`)
       .then((response) => {
+        // console.log(response.data);
         setData(response?.data);
         setLoading(false);
       })

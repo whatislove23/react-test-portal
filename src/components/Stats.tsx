@@ -26,9 +26,11 @@ function Stat({ id, title = "Your statistics" }: Props) {
   const idstat = useRef(0);
   useEffect(() => {
     setLoading(true);
-    fetchData(`getUserResults/${user.id}`)
+    fetchData(`getUserResults/${id || user.id}`)
       .then((res) => {
         setResults(res?.data);
+        // console.log(res.data);
+
         storedData.current = res?.data;
         setLoading(false);
       })

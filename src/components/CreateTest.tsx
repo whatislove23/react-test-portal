@@ -10,7 +10,7 @@ import { useAppSelector } from "../app/hooks";
 import { useNavigate } from "react-router-dom";
 import { IToServer } from "../interfaces/interfaces";
 import { postData } from "../functions/apiFunctions";
-import { Formik, Form, Field, FieldArray } from "formik";
+import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 
 function CreateTest() {
   const { user } = useAppSelector(getUser);
@@ -19,6 +19,24 @@ function CreateTest() {
   const initialValues = {
     title: "",
     questions: [
+      {
+        id: uuid(),
+        question: "",
+        answers: [
+          { answer: "", isRight: true, id: uuid() },
+          { answer: "", isRight: false, id: uuid() },
+          { answer: "", isRight: false, id: uuid() },
+        ],
+      },
+      {
+        id: uuid(),
+        question: "",
+        answers: [
+          { answer: "", isRight: true, id: uuid() },
+          { answer: "", isRight: false, id: uuid() },
+          { answer: "", isRight: false, id: uuid() },
+        ],
+      },
       {
         id: uuid(),
         question: "",
@@ -57,7 +75,7 @@ function CreateTest() {
             ),
         })
       )
-      .min(3, "At least 3 questions must be provided"),
+      .required(),
   });
   const onFormSubmit = (data: IToServer) => {
     const loadingToast = toast.loading("Loading...");
@@ -83,6 +101,7 @@ function CreateTest() {
     <div className="h-full ">
       <Formik
         validateOnBlur={false}
+        validateOnChange={true}
         validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={onFormSubmit}
@@ -94,28 +113,26 @@ function CreateTest() {
           setFieldValue,
           submitForm,
           validateForm,
+          errors,
         }) => (
           <Form className="px-5 mx-auto ">
             <h1 className="text-3xl text-slate-700 text-center my-2">
               Test creation
             </h1>
-            <div className="">
-              <StyledErrorField name={"title"} className="mb-2" />
-              <Field
-                name="title"
-                placeholder="Test name"
-                className="p-2 rounded w-full bg-slate-300 shadow placeholder:text-slate-800 outline-none mb-4"
-              />
 
+            <div className="">
+              <div className=" bg-slate-200 flex flex-col items-center mb-4 p-2 rounded shadow">
+                <StyledErrorField name="title" className="w-full mb-2" />
+                <Field
+                  name="title"
+                  placeholder={"Test name"}
+                  className={`p-2 rounded w-full bg-slate-50 shadow outline-none placeholder:text-slate-800 $`}
+                />
+              </div>
               <FieldArray name="questions">
                 {({ insert, remove, push }) => {
                   return (
-                    <>
-                      {values.questions.length < 3 && (
-                        <div className="font-bold text-slate-700">
-                          At least 3 questions must be provided
-                        </div>
-                      )}
+                    <div className="">
                       <div className="flex flex-col  rounded gap-4">
                         {values.questions.map((question, index) => {
                           return (
@@ -123,7 +140,7 @@ function CreateTest() {
                               key={question.id}
                               className="bg-slate-200 p-2  rounded shadow "
                             >
-                              {values.questions.length > 1 && (
+                              {values.questions.length > 3 && (
                                 <RxCross2
                                   onClick={() => remove(index)}
                                   className="ml-auto text-xl text-slate-900 font-bold cursor-pointer  mb-1"
@@ -136,13 +153,22 @@ function CreateTest() {
                               <Field
                                 name={`questions[${index}].question`}
                                 placeholder={`${index + 1}. Question `}
-                                className="p-2 rounded w-full bg-slate-50 shadow placeholder:text-slate-800 outline-none h-auto max-h-60"
+                                className={`p-2 rounded w-full bg-slate-50 shadow placeholder:text-slate-800 outline-none h-auto max-h-60`}
                                 type="text"
                                 as="textarea"
                               />
                               <FieldArray name={`questions[${index}].answers`}>
                                 {({ insert, remove, push }) => (
                                   <div className="flex flex-col w-full gap-2 mt-2">
+                                    {question.answers.every(
+                                      (answer) => answer.isRight === false
+                                    ) && (
+                                      <p>
+                                        {" "}
+                                        At least one correct question must be
+                                        provided
+                                      </p>
+                                    )}
                                     {question.answers.map(
                                       (answer, indexans) => {
                                         const handleRadioChange = () => {
@@ -154,7 +180,6 @@ function CreateTest() {
                                                   answerIndex === indexans, // Set selected answer to true, others to false
                                               })
                                             );
-
                                           setFieldValue(
                                             `questions[${index}].answers`,
                                             updatedAnswers
@@ -207,9 +232,9 @@ function CreateTest() {
                                                       ? "text-slate-50"
                                                       : "text-sate-700"
                                                   }`}
-                                                  onClick={() =>
-                                                    remove(indexans)
-                                                  }
+                                                  onClick={() => {
+                                                    remove(indexans);
+                                                  }}
                                                 />
                                               )}
                                             </div>
@@ -256,7 +281,7 @@ function CreateTest() {
                           </Button>
                         </div>
                       </div>
-                    </>
+                    </div>
                   );
                 }}
               </FieldArray>
